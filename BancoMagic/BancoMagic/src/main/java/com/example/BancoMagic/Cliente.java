@@ -43,9 +43,9 @@ public class Cliente {
     @Override
     public String toString() {
         return "Informações da Conta - " + contaMagica.getIdConta()
-                + "\nNome: " + getNome() + "\nCPF: " + getCpf() + "\nTelefone: " + getTelefone()
-                + "\nEmail: " + getEmail()
-                + "\nCategoria: " + contaMagica.getCategoria()
-                + "\nSaldo: " + contaMagica.getSaldo();
+                + "; Nome: " + getNome() + "; CPF: " + getCpf() + "; Telefone: " + getTelefone()
+                + "; Email: " + getEmail()
+                + "; Categoria: " + contaMagica.getCategoria()
+                + "; Saldo: " + contaMagica.getSaldo();
     }
 }

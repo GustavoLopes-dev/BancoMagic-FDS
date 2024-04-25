@@ -25,8 +25,8 @@ public class ContaMagica {
         return idConta;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public String getCategoria() {
+        return categoria.toString();
     }
     public String getTitular() {
         return titular.toString();
