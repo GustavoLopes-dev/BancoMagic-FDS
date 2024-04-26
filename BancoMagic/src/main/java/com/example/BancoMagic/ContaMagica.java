@@ -9,6 +9,9 @@ public class ContaMagica {
     private Float saldo;
 
     public ContaMagica(Cliente titular) {
+        if (titular == null) {
+            throw new IllegalArgumentException("O titular da conta não pode ser nulo.");
+        }
         if (idContaControle == 0) {
             idContaControle++;
             idConta = this.idContaControle;
@@ -50,6 +53,10 @@ public class ContaMagica {
     }
 
     public void Deposito(float valor) {
+        if (valor < 0) {
+            throw new IllegalArgumentException("O valor do deposito não pode ser negativo.");
+        }
+
         switch (categoria) {
             case GOLD: depGold(valor); break;
             case PLATINUM: depPlatinum(valor); break;
@@ -59,6 +66,9 @@ public class ContaMagica {
     }
 
     public void Saque(float valor) {
+        if (valor > getSaldo()) {
+            throw new IllegalArgumentException("Saldo insuficiente para realizar o saque.");
+        }
         saldo -= valor;
         updateAccount();
     }
@@ -73,17 +83,17 @@ public class ContaMagica {
         }
     }
 
-    public void depSilver(float valor) {
+    private void depSilver(float valor) {
         saldo += valor;
         totalDep += valor;
     }
 
-    public void depGold(float valor) {
+    private void depGold(float valor) {
         saldo += valor*1.1f;
         totalDep += valor*1.1f;
     }
 
-    public void depPlatinum(float valor) {
+    private void depPlatinum(float valor) {
         saldo += valor*1.25f;
         totalDep += valor*1.25f;
     }
