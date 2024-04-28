@@ -2,9 +2,9 @@ package com.example.BancoMagic;
 
 public class ContaMagica {
     private static Integer idContaControle = 0;
+    private Integer idConta;
     private Float totalDep = 0.0f;
     private Categoria categoria; // Toda conta inicia como Silver
-    private Integer idConta;
     private Cliente titular;
     private Float saldo;
 
@@ -12,13 +12,8 @@ public class ContaMagica {
         if (titular == null) {
             throw new IllegalArgumentException("O titular da conta não pode ser nulo.");
         }
-        if (idContaControle == 0) {
-            idContaControle++;
-            idConta = this.idContaControle;
-        } else {
-            idContaControle++;
-            idConta = this.idContaControle;
-        }
+        idContaControle++; // Incrementa o contador de ID
+        idConta = idContaControle; // Atribui o ID da conta
         this.categoria = Categoria.SILVER; // Inicia como Silver por padrão
         this.titular = titular;
         this.saldo = 0.0f;
@@ -52,36 +47,53 @@ public class ContaMagica {
                 + "; Saldo: " + saldo;
     }
 
-    public void Deposito(float valor) {
+    public void deposito(float valor) {
         if (valor < 0) {
             throw new IllegalArgumentException("O valor do deposito não pode ser negativo.");
         }
 
-        switch (categoria) {
+        updateAccount();
+        switch (this.categoria) {
             case GOLD: depGold(valor); break;
             case PLATINUM: depPlatinum(valor); break;
             default: depSilver(valor); break;
         }
-        updateAccount();
     }
 
-    public void Saque(float valor) {
+    public void saque(float valor) {
         if (valor > getSaldo()) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar o saque.");
+        }
+
+        if (valor < 0) {
+            throw new IllegalArgumentException("Valor de saque nao pode ser menor que zero.");
         }
         saldo -= valor;
         updateAccount();
     }
 
-    public void updateAccount() {
-        if ((this.saldo >= 50.000 && this.saldo < 200.000) && (this.categoria == Categoria.SILVER)) {
-            this.categoria = Categoria.GOLD;
-        } if (this.saldo >= 200.000 && this.categoria == Categoria.GOLD) {
+    private void updateAccount() {
+        // Verifica se a conta atinge ou supera R$ 200.000,00 para ser atualizada para a categoria "Platinum"
+        if (this.saldo >= 200_000.00 && this.categoria == Categoria.GOLD) {
             this.categoria = Categoria.PLATINUM;
-        } else {
+        }
+        else if(this.saldo >= 200_000.00 && this.categoria == Categoria.SILVER) {
+            this.categoria = Categoria.GOLD;
+        }
+        // Verifica se a conta cai abaixo de R$ 200.000,00 para ser rebaixada de Platinum para Gold
+        else if (this.saldo < 200_000.00 && this.categoria == Categoria.PLATINUM) {
+            this.categoria = Categoria.GOLD;
+        }
+        // Verifica se a conta atinge ou supera R$ 50.000,00 para ser atualizada para a categoria "Gold"
+        else if (this.saldo >= 50_000.00 && this.saldo < 200_000.00 && (this.categoria == Categoria.SILVER || this.categoria == Categoria.PLATINUM)) {
+            this.categoria = Categoria.GOLD;
+        }
+        // Verifica se a conta cai abaixo de R$ 50.000,00 para ser rebaixada de Gold para Silver
+        else if (this.saldo < 50_000.00 && this.categoria == Categoria.GOLD) {
             this.categoria = Categoria.SILVER;
         }
     }
+
 
     private void depSilver(float valor) {
         saldo += valor;
@@ -89,17 +101,20 @@ public class ContaMagica {
     }
 
     private void depGold(float valor) {
-        saldo += valor*1.1f;
-        totalDep += valor*1.1f;
+        // Valoriza o depósito em 1%
+        saldo += valor * 1.01f;
+        totalDep += valor;
     }
 
     private void depPlatinum(float valor) {
-        saldo += valor*1.25f;
-        totalDep += valor*1.25f;
+        // Valoriza o depósito em 2,5%
+        saldo += valor * 1.025f;
+        totalDep += valor;
     }
 
     //Criado apenas com o intuito de reiniciar o id de cada cliente para os casos de teste unitário.
     public void restartCount() {
         idContaControle = 0;
     }
+
 }
