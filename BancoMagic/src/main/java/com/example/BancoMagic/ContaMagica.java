@@ -2,10 +2,10 @@ package com.example.BancoMagic;
 
 public class ContaMagica {
     private static Integer idContaControle = 0;
-    private Integer idConta;
+    private final Integer idConta;
     private Float totalDep = 0.0f;
     private Categoria categoria; // Toda conta inicia como Silver
-    private Cliente titular;
+    private final Cliente titular;
     private Float saldo;
 
     public ContaMagica(Cliente titular) {
@@ -37,6 +37,10 @@ public class ContaMagica {
 
     public Float getSaldo() {
         return saldo;
+    }
+
+    public Float getExtrato() {
+        return totalDep;
     }
 
     @Override
